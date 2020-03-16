@@ -46,3 +46,14 @@ def login():
         else:
             return "Incorrect Username/Password", 401
 
+
+@app.route('/recharge', methods=['PUT'])
+def recharge():
+    if request.method == 'PUT':
+        user_info = request.json
+        user = Users.query.filter_by(phone=user_info["phone"]).first()
+        user.balance = user.balance + user_info["balance"]
+        db.session.commit()
+        return "Balance added successfully", 200
+
+
