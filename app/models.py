@@ -5,7 +5,8 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
-    phone = db.Column(db.String)
+    password = db.Column(db.String)
+    phone = db.Column(db.String, unique=True)
     balance = db.Column(db.Integer, default=0)
     cars = db.relationship('Cars', backref='owner')
 
