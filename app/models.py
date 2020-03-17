@@ -13,14 +13,22 @@ class Users(db.Model):
 
 class Cars(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    car_number = db.Column(db.String)
+    car_number = db.Column(db.String, unique=True)
     car_type = db.Column(db.String)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    tolls = db.relationship('Tolls', backref='car')
+    tolls_crossed = db.relationship('TollsCrossed', backref='car')
+
+
+class TollsCrossed(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    toll = db.relationship('Tolls', backref='toll_crossed', uselist=False)
+    car_number = db.Column(db.String, db.ForeignKey('cars.car_number'))
 
 
 class Tolls(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     booth_name = db.Column(db.String)
-    car_id = db.Column(db.Integer, db.ForeignKey('cars.id'))
+    car_toll_price = db.Column(db.Integer)
+    bus_toll_price = db.Column(db.Integer)
+
 
