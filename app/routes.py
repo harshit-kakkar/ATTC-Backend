@@ -4,7 +4,7 @@ API's for the project.
 
 from flask import request
 from app import app, db
-from app.models import Users, Cars, Tolls
+from app.models import Users, Cars, Tolls, TollsCrossed
 import json
 
 
@@ -89,3 +89,26 @@ def car_details():
         return send_car_json, 200
 
 
+@app.route('/toll-crossed', methods=['POST'])
+def toll_crossed():
+    """
+    This is the function where ML models will be integrated.
+    First the car number is read by ML model which is provided as input here.
+    Second facial recognition, to recognize the owner of the car (NOT IMPLEMENTED HERE).
+    """
+    if request.method == 'POST':
+        crossing_details = request.json
+        car = Cars.query.filter_by(car_number=crossing_details["car_number"]).first()
+        toll = Tolls.query.filter_by(id=crossing_details["toll"]).first()
+        if car.car_type == "car":
+            rem_balance = car.owner.balance - toll.car_toll_price
+        else:
+            rem_balance = car.owner.balance - toll.bus_toll_price
+        if rem_balance >= 0:
+            car.owner.balance = rem_balance
+            toll = TollsCrossed(toll=crossing_details["toll"], car_number=crossing_details["car_number"])
+            db.session.add(toll)
+            db.session.commit()
+            return "OPEN GATEWAY", 200
+        else:
+            return "Not enough balance.", 403
