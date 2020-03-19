@@ -21,7 +21,8 @@ class Cars(db.Model):
 
 class TollsCrossed(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    toll = db.relationship('Tolls', backref='toll_crossed', uselist=False)
+    # toll = db.relationship('Tolls', backref='toll_crossed', uselist=False)
+    toll = db.Column(db.Integer, db.ForeignKey('tolls.id'))
     car_number = db.Column(db.String, db.ForeignKey('cars.car_number'))
 
 
