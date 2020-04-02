@@ -8,21 +8,21 @@ from app.models import Users, Cars, Tolls, TollsCrossed
 import json
 
 
-@app.route('/home', methods=['GET'])
-def profile():
-    if request.method == 'GET':
-        user_phone = request.json
-        user = Users.query.filter_by(phone=user_phone["phone"]).first()
+@app.route('/home', methods=['POST'])
+def home():
+    user_phone = request.json
 
-        user_arr = []
-        local_user_dict = dict()
-        local_user_dict["name"] = user.first_name + " " + user.last_name
-        local_user_dict["balance"] = user.balance
+    user = Users.query.filter_by(phone=user_phone["phone"]).first()
 
-        user_arr.append(local_user_dict)
+    local_user_dict = dict()
+    local_user_dict["name"] = user.first_name + " " + user.last_name
+    local_user_dict["balance"] = user.balance
 
-        send_user_json = json.dumps(user_arr)
-        return send_user_json
+    send_user_json = json.dumps(local_user_dict)
+    print(send_user_json)
+    return send_user_json
+    # return "GOT REQUEST", 200
+
 
 
 @app.route('/signup', methods=['POST'])
@@ -44,7 +44,7 @@ def login():
         if user.password == user_info["password"]:
             return "Login successful.", 200
         else:
-            return "Incorrect Username/Password", 401
+            return "Incorrect Username/Password", 400
 
 
 @app.route('/recharge', methods=['PUT'])
