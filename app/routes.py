@@ -20,7 +20,6 @@ def home():
     local_user_dict["id"] = user.id
 
     send_user_json = json.dumps(local_user_dict)
-    print(send_user_json)
     return send_user_json
     # return "GOT REQUEST", 200
 
@@ -59,7 +58,7 @@ def recharge():
 
 
 @app.route('/car', methods=['POST', 'GET'])
-def car_details():
+def car_list():
     if request.method == 'POST':
         car_info = request.json
         user = Users.query.filter_by(phone=car_info("phone")).first()
@@ -71,7 +70,6 @@ def car_details():
 
     if request.method == 'GET':
         user_info = request.args.get('user_id')
-        print(user_info)
         cars = Cars.query.filter_by(owner_id=user_info).all()
         car_arr = []
         for car in cars:
@@ -89,6 +87,22 @@ def car_details():
             car_arr.append(local_car_dict)
         send_car_json = json.dumps(car_arr)
         return send_car_json, 200
+
+@app.route('/car-details', methods=['GET'])
+def car_details():
+    vehicle_number = request.args.get('vehicle_number')
+    vehicle = Cars.query.filter_by(car_number=vehicle_number).first()
+    tolls_arr = []
+    for cur_toll in vehicle.tolls_crossed:
+        local_toll_dict = dict()
+        toll = Tolls.query.filter_by(id=cur_toll.toll).first()
+        local_toll_dict["toll_name"] = toll.booth_name
+        tolls_arr.append(local_toll_dict)
+    print(tolls_arr)
+    send_tolls_json = json.dumps(tolls_arr)
+    return send_tolls_json
+
+
 
 
 @app.route('/toll-crossed', methods=['POST'])
