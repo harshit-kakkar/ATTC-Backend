@@ -17,6 +17,7 @@ def home():
     local_user_dict = dict()
     local_user_dict["name"] = user.first_name + " " + user.last_name
     local_user_dict["balance"] = user.balance
+    local_user_dict["id"] = user.id
 
     send_user_json = json.dumps(local_user_dict)
     print(send_user_json)
@@ -61,7 +62,7 @@ def recharge():
 def car_details():
     if request.method == 'POST':
         car_info = request.json
-        user = Users.query.filter_by(phone=car_info["phone"]).first()
+        user = Users.query.filter_by(phone=car_info("phone")).first()
         car = Cars(car_number=car_info["car_number"], car_type=car_info["car_type"],
                    owner_id=user.id)
         db.session.add(car)
@@ -69,20 +70,21 @@ def car_details():
         return "Added new car.", 201
 
     if request.method == 'GET':
-        user_info = request.json
-        cars = Cars.query.filter_by(owner_id=user_info["user_id"]).all()
+        user_info = request.args.get('user_id')
+        print(user_info)
+        cars = Cars.query.filter_by(owner_id=user_info).all()
         car_arr = []
         for car in cars:
             local_car_dict = dict()
-            local_car_dict["car_number"] = car.car_number
-            local_car_dict["car_type"] = car.car_type
-            tolls_arr = []
-            for cur_toll in car.tolls_crossed:
-                local_toll_dict = dict()
-                toll = Tolls.query.filter_by(id=cur_toll.toll).first()
-                local_toll_dict["toll_name"] = toll.booth_name
-                tolls_arr.append(local_toll_dict)
-            local_car_dict["tolls_crossed"] = tolls_arr
+            local_car_dict["Vehicle_Number"] = car.car_number
+            local_car_dict["Vehicle_Type"] = car.car_type
+            # tolls_arr = []
+            # for cur_toll in car.tolls_crossed:
+            #     local_toll_dict = dict()
+            #     toll = Tolls.query.filter_by(id=cur_toll.toll).first()
+            #     local_toll_dict["toll_name"] = toll.booth_name
+            #     tolls_arr.append(local_toll_dict)
+            # local_car_dict["tolls_crossed"] = tolls_arr
 
             car_arr.append(local_car_dict)
         send_car_json = json.dumps(car_arr)
