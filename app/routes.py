@@ -54,7 +54,8 @@ def recharge():
         user = Users.query.filter_by(phone=user_info["phone"]).first()
         user.balance = user.balance + user_info["balance"]
         db.session.commit()
-        return "Balance added successfully", 200
+        send_user_balance = {"balance": user.balance}
+        return send_user_balance, 200
 
 
 @app.route('/car', methods=['POST', 'GET'])
@@ -76,14 +77,6 @@ def car_list():
             local_car_dict = dict()
             local_car_dict["Vehicle_Number"] = car.car_number
             local_car_dict["Vehicle_Type"] = car.car_type
-            # tolls_arr = []
-            # for cur_toll in car.tolls_crossed:
-            #     local_toll_dict = dict()
-            #     toll = Tolls.query.filter_by(id=cur_toll.toll).first()
-            #     local_toll_dict["toll_name"] = toll.booth_name
-            #     tolls_arr.append(local_toll_dict)
-            # local_car_dict["tolls_crossed"] = tolls_arr
-
             car_arr.append(local_car_dict)
         send_car_json = json.dumps(car_arr)
         return send_car_json, 200
