@@ -8,6 +8,12 @@ from app.models import Users, Cars, Tolls, TollsCrossed
 import json
 
 
+@app.route('/deploy', methods=['GET'])
+def deploy():
+    some_json = {"message": "Deploy Successful"}
+    return some_json, 200
+
+
 @app.route('/home', methods=['POST'])
 def home():
     user_phone = request.json
