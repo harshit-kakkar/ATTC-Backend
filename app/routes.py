@@ -14,6 +14,11 @@ def deploy():
     return some_json, 200
 
 
+@app.route('/', methods=['GET'])
+def index():
+    some_json = {"message": "This is example route"}
+    return some_json, 200
+
 @app.route('/home', methods=['POST'])
 def home():
     user_phone = request.json
