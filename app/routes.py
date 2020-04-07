@@ -4,7 +4,7 @@ API's for the project.
 
 from flask import request
 from app import app, db
-from app.models import Users, Cars, Tolls, TollsCrossed
+from app.models import Users, Cars, Tolls, TollsCrossed, Admin
 import json
 
 
@@ -132,3 +132,15 @@ def toll_crossed():
             return "OPEN GATEWAY", 200
         else:
             return "Not enough balance.", 403
+
+
+@app.route('/admin', methods=['POST'])
+def admin_login():
+    if request.method == 'POST':
+        admin_details = request.json
+        admin = Admin.query.filter_by(username=admin_details["username"]).first()
+        if admin.password == admin_details["password"]:
+            return "Login successful.", 200
+        else:
+            return "Incorrect Username/Password", 400
+

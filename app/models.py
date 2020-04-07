@@ -33,3 +33,9 @@ class Tolls(db.Model):
     bus_toll_price = db.Column(db.Integer)
 
 
+class Admin(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String, primary_key=True)
+    password = db.Column(db.String)
+
+
