@@ -73,7 +73,7 @@ def recharge():
 def car_list():
     if request.method == 'POST':
         car_info = request.json
-        user = Users.query.filter_by(phone=car_info("phone")).first()
+        user = Users.query.filter_by(phone=car_info["phone"]).first()
         car = Cars(car_number=car_info["car_number"], car_type=car_info["car_type"],
                    owner_id=user.id)
         db.session.add(car)
